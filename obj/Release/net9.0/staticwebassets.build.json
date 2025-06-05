@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "BfVW4qK1xnFD+0VHu/d1zTvTGbY17JqgRL3u0hVLJIA=",
+  "Source": "RunTrackerAPI",
+  "BasePath": "_content/RunTrackerAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
