@@ -75,7 +75,7 @@ app.MapGet("/durs", async (RunDb db) => await db.Durations.ToListAsync());
 
 app.MapPost("/user", async (RunDb db, UserAccount user, IPasswordHasher _passwordHasher) => {
     var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username);
-    bool isPasswordValid = _passwordHasher.VerifyPassword(user.Password, existingUser.Password);
+    bool isPasswordValid = _passwordHasher.VerifyPassword(user.Password!, existingUser!.Password!);
     if (existingUser is not null && isPasswordValid) return Results.Ok(existingUser);
 
     return Results.Unauthorized();
@@ -85,7 +85,7 @@ app.MapPost("/register", async (RunDb db, UserAccount user, IPasswordHasher _pas
     var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username);
     if (existingUser is not null) return Results.BadRequest("Username already exists");
 
-    var hashedPassword = _passwordHasher.HashPassword(user.Password);
+    var hashedPassword = _passwordHasher.HashPassword(user.Password!);
     user.Password = hashedPassword;
     await db.AddAsync(user);
     await db.SaveChangesAsync();
