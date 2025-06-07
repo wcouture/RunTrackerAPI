@@ -163,3 +163,9 @@
 /Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunTrackerAPI.deps.json
 /Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunTrackerAPI.runtimeconfig.json
 /Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunTrackerAPI.staticwebassets.endpoints.json
+/Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/web.config
+/Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/appsettings.Development.json
+/Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/appsettings.json
+/Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/RunTrackerAPI.deps.json
+/Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/RunTrackerAPI.runtimeconfig.json
+/Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/RunTrackerAPI.staticwebassets.endpoints.json

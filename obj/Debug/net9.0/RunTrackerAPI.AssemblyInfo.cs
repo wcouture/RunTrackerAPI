@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RunTrackerAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+15685c8ad979612ccd285afefa233e4130063009")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+27b311f1dd299c4386027765fdba386a109b5aa2")]
 [assembly: System.Reflection.AssemblyProductAttribute("RunTrackerAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RunTrackerAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

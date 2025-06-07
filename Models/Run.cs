@@ -23,4 +23,5 @@ class RunDb : DbContext
     public RunDb(DbContextOptions options) : base(options) { }
     public DbSet<Run> RunData { get; set; } = null!;
     public DbSet<Duration> Durations { get; set; } = null!;
+    public DbSet<UserAccount> AccountData { get; set; } = null!;
 }

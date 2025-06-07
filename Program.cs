@@ -71,4 +71,17 @@ app.MapDelete("/run/{id}", async (RunDb db, int id) =>
 
 app.MapGet("/durs", async (RunDb db) => await db.Durations.ToListAsync());
 
+app.MapPost("/user", async (RunDb db, UserAccount user) => {
+    var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username && u.Password == user.Password);
+    if (existingUser is not null) return Results.Ok(existingUser);
+    
+    return Results.Unauthorized();
+});
+app.MapPost("/register", async (RunDb db, UserAccount user) =>
+{
+    await db.AddAsync(user);
+    await db.SaveChangesAsync();
+    return Results.Created($"/user/{user.Id}", user);
+});
+
 app.Run();
