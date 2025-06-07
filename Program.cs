@@ -39,6 +39,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => "Hello World!");
 
 // Run CRUD
+app.MapGet("/runs", async (RunDb db) =>  await db.RunData.Include(r => r.Duration).ToListAsync() );
 app.MapGet("/runs/{userId}", async (RunDb db, int userId) =>  await db.RunData.Include(r => r.Duration).Where(r => r.UserId == userId).ToListAsync() );
 app.MapPost("/run", async (RunDb db, Run run) =>
 {
@@ -47,7 +48,7 @@ app.MapPost("/run", async (RunDb db, Run run) =>
     return Results.Created($"/run/{run.Id}", run);
 });
 
-app.MapGet("/run/{id}", async (RunDb db, int id, int userId) => await db.RunData.Include(r => r.Duration).Where(r => r.Id == id && r.UserId == userId).FirstAsync());
+app.MapGet("/run/{id}", async (RunDb db, int id) => await db.RunData.Include(r => r.Duration).Where(r => r.Id == id).FirstAsync());
 
 app.MapPut("/run/{id}", async (RunDb db, Run updatedRun, int id) =>
 {
@@ -73,6 +74,8 @@ app.MapDelete("/run/{id}", async (RunDb db, int id) =>
 });
 
 // User Authentication
+app.MapGet("/users", async (RunDb db) => await db.AccountData.ToListAsync());
+
 app.MapPost("/user", async (RunDb db, UserAccount user, IPasswordHasher _passwordHasher) => {
     var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username);
     bool isPasswordValid = _passwordHasher.VerifyPassword(user.Password!, existingUser!.Password!);
