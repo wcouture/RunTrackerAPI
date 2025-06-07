@@ -5,6 +5,7 @@ namespace RunTrackerAPI.Models;
 public class Run
 {
     public int Id { get; set; }
+    public int UserId { get; set; }
     public string? Label { get; set; }
     public Duration? Duration { get; set; }
     public double Mileage { get; set; }
