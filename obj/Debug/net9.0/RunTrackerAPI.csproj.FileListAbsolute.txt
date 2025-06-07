@@ -169,3 +169,4 @@
 /Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/RunTrackerAPI.deps.json
 /Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/RunTrackerAPI.runtimeconfig.json
 /Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/RunAPI/RunAPI/RunTrackerAPI.staticwebassets.endpoints.json
+/Users/williamcouture/Personal/DOTNET/RunTrackerAPI/bin/Debug/net9.0/BCrypt.Net-Next.dll

@@ -74,8 +74,9 @@ app.MapDelete("/run/{id}", async (RunDb db, int id) =>
 app.MapGet("/durs", async (RunDb db) => await db.Durations.ToListAsync());
 
 app.MapPost("/user", async (RunDb db, UserAccount user, IPasswordHasher _passwordHasher) => {
-    var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username && _passwordHasher.VerifyPassword(user.Password, u.Password));
-    if (existingUser is not null) return Results.Ok(existingUser);
+    var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username);
+    bool isPasswordValid = _passwordHasher.VerifyPassword(user.Password, existingUser.Password);
+    if (existingUser is not null && isPasswordValid) return Results.Ok(existingUser);
 
     return Results.Unauthorized();
 });
