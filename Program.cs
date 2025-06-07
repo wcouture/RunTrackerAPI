@@ -1,12 +1,14 @@
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using RunTrackerAPI.Models;
+using RunTrackerAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("RunData") ?? "Data Source=RunData.db";
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSqlite<RunDb>(connectionString);
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -71,14 +73,19 @@ app.MapDelete("/run/{id}", async (RunDb db, int id) =>
 
 app.MapGet("/durs", async (RunDb db) => await db.Durations.ToListAsync());
 
-app.MapPost("/user", async (RunDb db, UserAccount user) => {
-    var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username && u.Password == user.Password);
+app.MapPost("/user", async (RunDb db, UserAccount user, IPasswordHasher _passwordHasher) => {
+    var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username && _passwordHasher.VerifyPassword(user.Password, u.Password));
     if (existingUser is not null) return Results.Ok(existingUser);
-    
+
     return Results.Unauthorized();
 });
-app.MapPost("/register", async (RunDb db, UserAccount user) =>
+app.MapPost("/register", async (RunDb db, UserAccount user, IPasswordHasher _passwordHasher) =>
 {
+    var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username);
+    if (existingUser is not null) return Results.BadRequest("Username already exists");
+
+    var hashedPassword = _passwordHasher.HashPassword(user.Password);
+    user.Password = hashedPassword;
     await db.AddAsync(user);
     await db.SaveChangesAsync();
     return Results.Created($"/user/{user.Id}", user);
