@@ -68,13 +68,13 @@ public class RunService : IRunService
         run.Label = updatedRun.Label;
         if (run.Duration is not null)
         {
-            run.Duration.Hours = updatedRun.Duration.Hours;
-            run.Duration.Minutes = updatedRun.Duration.Minutes;
-            run.Duration.Seconds = updatedRun.Duration.Seconds;
+            run.Duration.Hours = updatedRun.Duration!.Hours;
+            run.Duration.Minutes = updatedRun.Duration!.Minutes;
+            run.Duration.Seconds = updatedRun.Duration!.Seconds;
         }
         else
         {
-            run.Duration = new Duration() { Hours = updatedRun.Duration.Hours, Minutes = updatedRun.Duration.Minutes, Seconds = updatedRun.Duration.Seconds };
+            run.Duration = new Duration() { Hours = updatedRun.Duration!.Hours, Minutes = updatedRun.Duration!.Minutes, Seconds = updatedRun.Duration!.Seconds };
         }
         run.Mileage = updatedRun.Mileage;
 
