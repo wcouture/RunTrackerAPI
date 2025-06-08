@@ -50,7 +50,7 @@ app.MapDelete("/run/{id}",      async (RunService runService, int id) => await r
 
 // User Authentication
 app.MapGet("/users",            async (AccountService accountService) => await accountService.GetAllAccounts());
-app.MapGet("/users/{id}",       async (AccountService accountService, int id) => await accountService.GetAccountById(id));
+app.MapPost("/login",           async (AccountService accountService, UserAccount user) => await accountService.GetAccountById(user.Id));
 app.MapPost("/register",        async (AccountService accountService, UserAccount user) => await accountService.CreateAccount(user));
 app.MapPut("/users/{id}",       async (AccountService accountService, UserAccount user, int id) => await accountService.UpdateAccount(user, id));
 app.MapDelete("/users/{id}",    async (AccountService accountService, int id) => await accountService.DeleteAccount(id));
