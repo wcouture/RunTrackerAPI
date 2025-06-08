@@ -19,7 +19,7 @@ public class Duration
     public int Seconds { get; set; }
 }
 
-class RunDb : DbContext
+public class RunDb : DbContext
 {
     public RunDb(DbContextOptions options) : base(options) { }
     public DbSet<Run> RunData { get; set; } = null!;

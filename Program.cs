@@ -9,13 +9,15 @@ var connectionString = builder.Configuration.GetConnectionString("RunData") ?? "
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSqlite<RunDb>(connectionString);
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<RunService>();
+builder.Services.AddScoped<AccountService>();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    c.SwaggerDoc("v2", new OpenApiInfo
     {
-        Title = "RunTracker API",
-        Description = "Track your running progress",
-        Version = "v1"
+        Title = "PaceMates API",
+        Description = "Track and share your running progress",
+        Version = "v2"
     });
 });
 
@@ -32,67 +34,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RunTracker API");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PaceMates API");
     });
 }
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Welcome to PaceMates!");
 
 // Run CRUD
-app.MapGet("/runs", async (RunDb db) =>  await db.RunData.Include(r => r.Duration).ToListAsync() );
-app.MapGet("/runs/{userId}", async (RunDb db, int userId) =>  await db.RunData.Include(r => r.Duration).Where(r => r.UserId == userId).ToListAsync() );
-app.MapPost("/run", async (RunDb db, Run run) =>
-{
-    await db.AddAsync(run);
-    await db.SaveChangesAsync();
-    return Results.Created($"/run/{run.Id}", run);
-});
-
-app.MapGet("/run/{id}", async (RunDb db, int id) => await db.RunData.Include(r => r.Duration).Where(r => r.Id == id).FirstAsync());
-
-app.MapPut("/run/{id}", async (RunDb db, Run updatedRun, int id) =>
-{
-    var run = await db.RunData.FindAsync(id);
-    if (run is null) return Results.NotFound();
-
-    run.Label = updatedRun.Label;
-    run.Duration = updatedRun.Duration;
-    run.Mileage = updatedRun.Mileage;
-
-    await db.SaveChangesAsync();
-    return Results.NoContent();
-});
-
-app.MapDelete("/run/{id}", async (RunDb db, int id) =>
-{
-    var run = await db.RunData.FindAsync(id);
-    if (run is null) return Results.NotFound();
-
-    db.RunData.Remove(run);
-    await db.SaveChangesAsync();
-    return Results.Ok();
-});
+app.MapGet("/runs",             async (RunService runService) => await runService.GetAllRuns());
+app.MapGet("/runs/{userId}",    async (RunService runService, int userId) => await runService.GetRunsByUserId(userId));
+app.MapPost("/run",             async (RunService runService, Run run) => await runService.CreateRun(run));
+app.MapGet("/run/{id}",         async (RunService runService, int id) => await runService.GetRunById(id));
+app.MapPut("/run/{id}",         async (RunService runService, Run updatedRun, int id) => await runService.UpdateRun(updatedRun, id));
+app.MapDelete("/run/{id}",      async (RunService runService, int id) => await runService.DeleteRun(id));
 
 // User Authentication
-app.MapGet("/users", async (RunDb db) => await db.AccountData.ToListAsync());
-
-app.MapPost("/user", async (RunDb db, UserAccount user, IPasswordHasher _passwordHasher) => {
-    var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username);
-    bool isPasswordValid = _passwordHasher.VerifyPassword(user.Password!, existingUser!.Password!);
-    if (existingUser is not null && isPasswordValid) return Results.Ok(existingUser);
-
-    return Results.Unauthorized();
-});
-app.MapPost("/register", async (RunDb db, UserAccount user, IPasswordHasher _passwordHasher) =>
-{
-    var existingUser = await db.AccountData.FirstOrDefaultAsync(u => u.Username == user.Username);
-    if (existingUser is not null) return Results.BadRequest("Username already exists");
-
-    var hashedPassword = _passwordHasher.HashPassword(user.Password!);
-    user.Password = hashedPassword;
-    await db.AddAsync(user);
-    await db.SaveChangesAsync();
-    return Results.Created($"/user/{user.Id}", user);
-});
+app.MapGet("/users",            async (AccountService accountService) => await accountService.GetAllAccounts());
+app.MapGet("/users/{id}",       async (AccountService accountService, int id) => await accountService.GetAccountById(id));
+app.MapPost("/register",        async (AccountService accountService, UserAccount user) => await accountService.CreateAccount(user));
+app.MapPut("/users/{id}",       async (AccountService accountService, UserAccount user, int id) => await accountService.UpdateAccount(user, id));
+app.MapDelete("/users/{id}",    async (AccountService accountService, int id) => await accountService.DeleteAccount(id));
 
 app.Run();
