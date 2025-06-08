@@ -1,11 +1,14 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace RunTrackerAPI.Models;
 
 public class Run
 {
+    [Key]
     public int Id { get; set; }
     public int UserId { get; set; }
+    public DateTime Date { get; set; }
     public string? Label { get; set; }
     public Duration? Duration { get; set; }
     public double Mileage { get; set; }

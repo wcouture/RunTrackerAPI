@@ -88,6 +88,7 @@ public class AccountService : IAccountService
         var existingAccount = await _db.AccountData.FindAsync(id);
         if (existingAccount is null) return Results.NotFound();
 
+        existingAccount.Email = account.Email;
         existingAccount.Username = account.Username;
         existingAccount.Password = _passwordHasher.HashPassword(account.Password!);
         existingAccount.Role = account.Role;
