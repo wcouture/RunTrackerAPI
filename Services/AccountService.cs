@@ -41,11 +41,15 @@ public class AccountService : IAccountService
     /// - Results.Ok(account) if the account is found
     /// - Results.NotFound() if the account does not exist
     /// </returns>
-    public async Task<IResult> GetAccountById(int id)
+    public async Task<IResult> Authenticate(UserAccount user)
     {
-        var account = await _db.AccountData.FindAsync(id);
+        var account = await _db.AccountData.FirstOrDefaultAsync(u => u.Email == user.Email);
         if (account is null) return Results.NotFound();
-        return Results.Ok(account);
+        if (_passwordHasher.VerifyPassword(user.Password!, account.Password!))
+        {
+            return Results.Ok(account);
+        }
+        return Results.Unauthorized();
     }
 
     /// <summary>

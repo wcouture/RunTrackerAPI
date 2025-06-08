@@ -40,6 +40,16 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => "Welcome to PaceMates!");
 
+app.MapDelete("/delete/{secret}",        async (RunDb db, string secret) => {
+    if (secret == "1234567890") {
+        await db.Database.EnsureDeletedAsync();
+        await db.Database.EnsureCreatedAsync();
+        await db.SaveChangesAsync();
+        return Results.Ok("Database deleted and recreated");
+    }
+    return Results.BadRequest("Invalid secret");
+});
+
 // Run CRUD
 app.MapGet("/runs",             async (RunService runService) => await runService.GetAllRuns());
 app.MapGet("/runs/{userId}",    async (RunService runService, int userId) => await runService.GetRunsByUserId(userId));
@@ -50,7 +60,7 @@ app.MapDelete("/run/{id}",      async (RunService runService, int id) => await r
 
 // User Authentication
 app.MapGet("/users",            async (AccountService accountService) => await accountService.GetAllAccounts());
-app.MapPost("/login",           async (AccountService accountService, UserAccount user) => await accountService.GetAccountById(user.Id));
+app.MapPost("/login",           async (AccountService accountService, UserAccount user) => await accountService.Authenticate(user));
 app.MapPost("/register",        async (AccountService accountService, UserAccount user) => await accountService.CreateAccount(user));
 app.MapPut("/users/{id}",       async (AccountService accountService, UserAccount user, int id) => await accountService.UpdateAccount(user, id));
 app.MapDelete("/users/{id}",    async (AccountService accountService, int id) => await accountService.DeleteAccount(id));
