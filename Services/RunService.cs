@@ -77,6 +77,7 @@ public class RunService : IRunService
             run.Duration = new Duration() { Hours = updatedRun.Duration!.Hours, Minutes = updatedRun.Duration!.Minutes, Seconds = updatedRun.Duration!.Seconds };
         }
         run.Mileage = updatedRun.Mileage;
+        run.Date = updatedRun.Date;
 
         await _db.SaveChangesAsync();
         return Results.NoContent();
