@@ -26,7 +26,7 @@ public class RunService : IRunService
     /// <returns>A Task containing a List of Run records.</returns>
     public async Task<List<Run>> GetAllRuns()
     {
-        return await _db.RunData.Include(r => r.Duration).ToListAsync();
+        return await _db.RunData.Include(r => r.Duration).OrderByDescending(r => r.Id).ToListAsync();
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public class RunService : IRunService
     /// <returns>A Task containing a List of Run records associated with the specified user.</returns>
     public async Task<List<Run>> GetRunsByUserId(int userId)
     {
-        return await _db.RunData.Include(r => r.Duration).Where(r => r.UserId == userId).ToListAsync();
+        return await _db.RunData.Include(r => r.Duration).Where(r => r.UserId == userId).OrderByDescending(r => r.Id).ToListAsync();
     }
 
     /// <summary>
