@@ -118,4 +118,27 @@ public class AccountService : IAccountService
         await _db.SaveChangesAsync();
         return Results.Ok();
     }
+
+    public async Task<IResult> GetAccountFriends(int id)
+    {
+        var account = await _db.AccountData.FindAsync(id);
+        if (account is null) return Results.NotFound();
+
+        var friends = account.Friends;
+        return Results.Ok(friends);
+    }
+
+    public async Task<IResult> UserInfo(int id)
+    {
+        var account = await _db.AccountData.Select(a => new {
+            a.Id,
+            a.Username,
+            a.Email,
+            a.Role,
+            a.Friends
+        }).FirstOrDefaultAsync(a => a.Id == id);
+        if (account is null) return Results.NotFound();
+
+        return Results.Ok(account);
+    }
 }
