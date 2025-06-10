@@ -11,6 +11,8 @@ builder.Services.AddSqlite<RunDb>(connectionString);
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<RunService>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<InviteService>();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v2", new OpenApiInfo
@@ -34,7 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PaceMates API");
+        c.SwaggerEndpoint("/swagger/v2/swagger.json", "PaceMates API");
     });
 }
 
@@ -64,5 +66,11 @@ app.MapPost("/login",           async (AccountService accountService, UserAccoun
 app.MapPost("/register",        async (AccountService accountService, UserAccount user) => await accountService.CreateAccount(user));
 app.MapPut("/users/{id}",       async (AccountService accountService, UserAccount user, int id) => await accountService.UpdateAccount(user, id));
 app.MapDelete("/users/{id}",    async (AccountService accountService, int id) => await accountService.DeleteAccount(id));
+
+// Friend Invites
+app.MapPost("/invite",          async (InviteService inviteService, FriendInvite newInvite) => await inviteService.CreateInvite(newInvite));
+app.MapGet("/invites/{userId}", async (InviteService inviteService, int userId) => await inviteService.GetInvitesByUserId(userId));
+app.MapPut("/invites/{id}",     async (InviteService inviteService, int receiverId, int id) => await inviteService.AcceptInvite(receiverId, id));
+app.MapDelete("/invites/{id}",  async (InviteService inviteService, int receiverId, int id) => await inviteService.RejectInvite(receiverId, id));
 
 app.Run();

@@ -28,4 +28,5 @@ public class RunDb : DbContext
     public DbSet<Run> RunData { get; set; } = null!;
     public DbSet<Duration> Durations { get; set; } = null!;
     public DbSet<UserAccount> AccountData { get; set; } = null!;
+    public DbSet<FriendInvite> FriendInvites { get; set; } = null!;
 }

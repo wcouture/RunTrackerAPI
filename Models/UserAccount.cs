@@ -10,4 +10,5 @@ public class UserAccount {
     public string? Username {get; set;}
     public string? Password {get; set;}
     public string? Role {get; set;}
+    public List<int> Friends {get; set;} = new List<int>();
 }
