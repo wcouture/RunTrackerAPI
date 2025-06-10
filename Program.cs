@@ -74,8 +74,8 @@ app.MapDelete("/users/{id}/friends/{friendId}", async (AccountService accountSer
 app.MapGet("/invites",          async (InviteService inviteService) => await inviteService.AllInvites());
 app.MapPost("/invite",          async (InviteService inviteService, FriendInvite newInvite) => await inviteService.CreateInvite(newInvite));
 app.MapGet("/invites/{userId}", async (InviteService inviteService, int userId) => await inviteService.GetInvitesByUserId(userId));
-app.MapPut("/invites/{id}",     async (InviteService inviteService, int receiverId, int id) => await inviteService.AcceptInvite(receiverId, id));
-app.MapDelete("/invites/{id}",  async (InviteService inviteService, int receiverId, int id) => await inviteService.RejectInvite(receiverId, id));
+app.MapPut("/invites/accept/{receiverId}/{id}", async (InviteService inviteService, int receiverId, int id) => await inviteService.AcceptInvite(receiverId, id));
+app.MapDelete("/invites/reject/{receiverId}/{id}",  async (InviteService inviteService, int receiverId, int id) => await inviteService.RejectInvite(receiverId, id));
 app.MapDelete("/invites/cancel/{id}",  async (InviteService inviteService, int senderId, int id) => await inviteService.DeleteInvite(senderId, id));
 
 app.Run();
