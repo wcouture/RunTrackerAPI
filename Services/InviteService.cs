@@ -20,11 +20,54 @@ public class InviteService : IInviteService {
     }
 
     /// <summary>
+    /// Retrieves all FriendInvite records from the database.
+    /// </summary>
+    /// <returns>A list of FriendInvite objects.</returns>
+    public async Task<List<FriendInvite>> AllInvites() {
+        return await _db.FriendInvites.ToListAsync();
+    }
+
+    /// <summary>
     /// Creates a new FriendInvite record in the database.
     /// </summary>
     /// <param name="invite">The FriendInvite object to create.</param>
     /// <returns>The created FriendInvite object.</returns>
     public async Task<IResult> CreateInvite(FriendInvite invite) {
+        // Check if the sender and receiver are the same
+        if (invite.SenderId == invite.ReceiverId) {
+            return Results.BadRequest("You cannot invite yourself.");
+        }
+
+        // Check if the sender and receiver exist
+        var sender = await _db.AccountData.FirstOrDefaultAsync(a => a.Id == invite.SenderId);
+        if (sender == null) {
+            return Results.NotFound();
+        }
+
+        var receiver = await _db.AccountData.FirstOrDefaultAsync(a => a.Id == invite.ReceiverId);
+        if (receiver == null) {
+            return Results.NotFound();
+        }
+
+        // Check if the sender is friends with the receiver
+        if (sender.Friends.Contains(invite.ReceiverId)) {
+            return Results.BadRequest("You are already friends with this user.");
+        }
+
+        // Check if the sender has already invited the receiver
+        var dupeInvite = await _db.FriendInvites.FirstOrDefaultAsync(i => i.SenderId == invite.SenderId && i.ReceiverId == invite.ReceiverId);
+        if (dupeInvite != null) {
+            return Results.BadRequest("You have already invited this user.");
+        }
+
+        // Check if the receiver has already invited the sender
+        var mutualInvite = await _db.FriendInvites.FirstOrDefaultAsync(i => i.SenderId == invite.ReceiverId && i.ReceiverId == invite.SenderId);
+        if (mutualInvite != null) {
+            // If the receiver has already invited the sender, accept the invite
+            return await AcceptInvite(invite.SenderId, mutualInvite.Id);
+        }
+
+        // Add the invite to the database
         _db.FriendInvites.Add(invite);
         await _db.SaveChangesAsync();
         return Results.Ok(invite);
@@ -55,6 +98,7 @@ public class InviteService : IInviteService {
         if (sender == null) {
             return Results.NotFound();
         }
+
         sender.Friends.Add(receiverId);
         var receiver = await _db.AccountData.FirstOrDefaultAsync(a => a.Id == invite.ReceiverId);
         if (receiver == null) {
@@ -77,6 +121,8 @@ public class InviteService : IInviteService {
             return Results.NotFound();
         }
         invite.Status = FriendInviteStatus.Rejected;
+
+        _db.FriendInvites.Remove(invite);
         await _db.SaveChangesAsync();
         return Results.Ok(invite);
     }

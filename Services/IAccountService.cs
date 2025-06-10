@@ -11,4 +11,5 @@ public interface IAccountService
     Task<IResult> DeleteAccount(int id);
     Task<IResult> UserInfo(int id);
     Task<IResult> GetAccountFriends(int id);
+    Task<IResult> RemoveFriend(int id, int friendId);
 }

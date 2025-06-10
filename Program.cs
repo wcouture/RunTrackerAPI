@@ -67,12 +67,15 @@ app.MapPost("/login",           async (AccountService accountService, UserAccoun
 app.MapPost("/register",        async (AccountService accountService, UserAccount user) => await accountService.CreateAccount(user));
 app.MapPut("/users/{id}",       async (AccountService accountService, UserAccount user, int id) => await accountService.UpdateAccount(user, id));
 app.MapDelete("/users/{id}",    async (AccountService accountService, int id) => await accountService.DeleteAccount(id));
-app.MapGet("/users/{id}/friends", async (AccountService accountService, int id) => await accountService.GetAccountFriends(id));
+app.MapGet("/users/{id}/friends",               async (AccountService accountService, int id) => await accountService.GetAccountFriends(id));
+app.MapDelete("/users/{id}/friends/{friendId}", async (AccountService accountService, int id, int friendId) => await accountService.RemoveFriend(id, friendId));
 
 // Friend Invites
+app.MapGet("/invites",          async (InviteService inviteService) => await inviteService.AllInvites());
 app.MapPost("/invite",          async (InviteService inviteService, FriendInvite newInvite) => await inviteService.CreateInvite(newInvite));
 app.MapGet("/invites/{userId}", async (InviteService inviteService, int userId) => await inviteService.GetInvitesByUserId(userId));
 app.MapPut("/invites/{id}",     async (InviteService inviteService, int receiverId, int id) => await inviteService.AcceptInvite(receiverId, id));
 app.MapDelete("/invites/{id}",  async (InviteService inviteService, int receiverId, int id) => await inviteService.RejectInvite(receiverId, id));
+app.MapDelete("/invites/cancel/{id}",  async (InviteService inviteService, int senderId, int id) => await inviteService.DeleteInvite(senderId, id));
 
 app.Run();

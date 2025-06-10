@@ -141,4 +141,26 @@ public class AccountService : IAccountService
 
         return Results.Ok(account);
     }
+
+    public async Task<IResult> RemoveFriend(int id, int friendId)
+    {
+        var account = await _db.AccountData.FindAsync(id);
+        if (account is null) return Results.NotFound();
+
+        var friend = await _db.AccountData.FindAsync(friendId);
+        if (friend is null) return Results.NotFound();
+
+        if (!account.Friends.Contains(friendId) || !friend.Friends.Contains(id)) return Results.NotFound();
+
+        account.Friends.Remove(friendId);
+        friend.Friends.Remove(id);
+
+        var invite = await _db.FriendInvites.FirstOrDefaultAsync(i => (i.SenderId == id && i.ReceiverId == friendId) || (i.SenderId == friendId && i.ReceiverId == id));
+        if (invite != null) {
+            _db.FriendInvites.Remove(invite);
+        }
+
+        await _db.SaveChangesAsync();
+        return Results.Ok();
+    }
 }
