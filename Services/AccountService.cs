@@ -33,6 +33,19 @@ public class AccountService : IAccountService
         return await _db.AccountData.ToListAsync();
     }
 
+    public async Task<IResult> SearchAccounts(string searchTerm)
+    {
+        if (string.IsNullOrEmpty(searchTerm)) return Results.BadRequest("Search term is required");
+        Console.WriteLine("searchTerm: " + searchTerm);
+        var accounts = await _db.AccountData.Where(a => a.Username.Contains(searchTerm)).Select(a => new {
+            a.Id,
+            a.Username,
+            a.Email,
+            a.Role,
+        }).ToListAsync();
+        return Results.Ok(accounts);
+    }
+
     /// <summary>
     /// Retrieves a specific user account by its unique identifier.
     /// </summary>
