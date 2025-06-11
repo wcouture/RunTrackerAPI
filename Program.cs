@@ -53,30 +53,29 @@ app.MapDelete("/delete/{secret}",        async (RunDb db, string secret) => {
 });
 
 // Run CRUD
-app.MapGet("/runs",             async (RunService runService) => await runService.GetAllRuns());
-app.MapGet("/runs/{userId}",    async (RunService runService, int userId) => await runService.GetRunsByUserId(userId));
-app.MapPost("/run",             async (RunService runService, Run run) => await runService.CreateRun(run));
-app.MapGet("/run/{id}",         async (RunService runService, int id) => await runService.GetRunById(id));
-app.MapPut("/run/{id}",         async (RunService runService, Run updatedRun, int id) => await runService.UpdateRun(updatedRun, id));
-app.MapDelete("/run/{id}",      async (RunService runService, int id) => await runService.DeleteRun(id));
+app.MapGet(     "/runs/all",            async (RunService runService) => await runService.GetAllRuns());
+app.MapGet(     "/runs/user/{userId}",  async (RunService runService, int userId) => await runService.GetRunsByUserId(userId));
+app.MapPost(    "/run/create",          async (RunService runService, Run run) => await runService.CreateRun(run));
+app.MapGet(     "/run/find/{id}",       async (RunService runService, int id) => await runService.GetRunById(id));
+app.MapPut(     "/run/update/{id}",     async (RunService runService, Run updatedRun, int id) => await runService.UpdateRun(updatedRun, id));
+app.MapDelete(  "/run/delete/{id}",     async (RunService runService, int id) => await runService.DeleteRun(id));
 
 // User Authentication
-app.MapGet("/users",            async (AccountService accountService) => await accountService.GetAllAccounts());
-app.MapGet("/users/{id}",       async (AccountService accountService, int id) => await accountService.UserInfo(id));
-app.MapGet("/search/{searchTerm}", async (AccountService accountService, string searchTerm) => await accountService.SearchAccounts(searchTerm));
-app.MapPost("/login",           async (AccountService accountService, UserAccount user) => await accountService.Authenticate(user));
-app.MapPost("/register",        async (AccountService accountService, UserAccount user) => await accountService.CreateAccount(user));
-app.MapPut("/users/{id}",       async (AccountService accountService, UserAccount user, int id) => await accountService.UpdateAccount(user, id));
-app.MapDelete("/users/{id}",    async (AccountService accountService, int id) => await accountService.DeleteAccount(id));
-app.MapGet("/users/{id}/friends",               async (AccountService accountService, int id) => await accountService.GetAccountFriends(id));
-app.MapDelete("/users/{id}/friends/{friendId}", async (AccountService accountService, int id, int friendId) => await accountService.RemoveFriend(id, friendId));
+app.MapGet(     "/user/all",                            async (AccountService accountService) => await accountService.GetAllAccounts());
+app.MapGet(     "/user/find/{id}",                      async (AccountService accountService, int id) => await accountService.UserInfo(id));
+app.MapGet(     "/user/search/{searchTerm}",            async (AccountService accountService, string searchTerm) => await accountService.SearchAccounts(searchTerm));
+app.MapPost(    "/user/login",                          async (AccountService accountService, UserAccount user) => await accountService.Authenticate(user));
+app.MapPost(    "/user/register",                       async (AccountService accountService, UserAccount user) => await accountService.CreateAccount(user)); // TODO: Add register
+app.MapPut(     "/user/update/{id}",                    async (AccountService accountService, UserAccount user, int id) => await accountService.UpdateAccount(user, id)); // TODO: Add update
+app.MapDelete(  "/user/delete/{id}",                    async (AccountService accountService, int id) => await accountService.DeleteAccount(id)); // TODO: Add delete
+app.MapGet(     "/user/friends/all/{id}",               async (AccountService accountService, int id) => await accountService.GetAccountFriends(id));
+app.MapDelete(  "/user/friends/remove/{id}/{friendId}", async (AccountService accountService, int id, int friendId) => await accountService.RemoveFriend(id, friendId)); // TODO: Add remove friend
 
 // Friend Invites
-app.MapGet("/invites",          async (InviteService inviteService) => await inviteService.AllInvites());
-app.MapPost("/invite",          async (InviteService inviteService, FriendInvite newInvite) => await inviteService.CreateInvite(newInvite));
-app.MapGet("/invites/{userId}", async (InviteService inviteService, int userId) => await inviteService.GetInvitesByUserId(userId));
-app.MapPut("/invites/accept/{receiverId}/{id}", async (InviteService inviteService, int receiverId, int id) => await inviteService.AcceptInvite(receiverId, id));
-app.MapDelete("/invites/reject/{receiverId}/{id}",  async (InviteService inviteService, int receiverId, int id) => await inviteService.RejectInvite(receiverId, id));
-app.MapDelete("/invites/cancel/{id}",  async (InviteService inviteService, int senderId, int id) => await inviteService.DeleteInvite(senderId, id));
+app.MapPost(    "/invites/create",                   async (InviteService inviteService, FriendInvite newInvite) => await inviteService.CreateInvite(newInvite));
+app.MapGet(     "/invites/user/{userId}",            async (InviteService inviteService, int userId) => await inviteService.GetInvitesByUserId(userId));
+app.MapPut(     "/invites/accept/{receiverId}/{id}", async (InviteService inviteService, int receiverId, int id) => await inviteService.AcceptInvite(receiverId, id));
+app.MapDelete(  "/invites/reject/{receiverId}/{id}", async (InviteService inviteService, int receiverId, int id) => await inviteService.RejectInvite(receiverId, id));
+app.MapDelete(  "/invites/cancel/{id}",              async (InviteService inviteService, int senderId, int id) => await inviteService.DeleteInvite(senderId, id));
 
 app.Run();
