@@ -83,6 +83,7 @@ public class AccountService : IAccountService
 
         var hashedPassword = _passwordHasher.HashPassword(account.Password!);
         account.Password = hashedPassword;
+        account.Friends = new List<int>();
         await _db.AccountData.AddAsync(account);
         await _db.SaveChangesAsync();
         return Results.Created($"/users/{account.Id}", account);
