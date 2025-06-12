@@ -36,8 +36,7 @@ public class AccountService : IAccountService
     public async Task<IResult> SearchAccounts(string searchTerm)
     {
         if (string.IsNullOrEmpty(searchTerm)) return Results.BadRequest("Search term is required");
-        Console.WriteLine("searchTerm: " + searchTerm);
-        var accounts = await _db.AccountData.Where(a => a.Username.Contains(searchTerm)).Select(a => new {
+        var accounts = await _db.AccountData.Where(a => a.Username!.Contains(searchTerm)).Select(a => new {
             a.Id,
             a.Username,
             a.Email,
