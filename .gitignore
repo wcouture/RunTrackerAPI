@@ -1,3 +1,4 @@
 RunAPI/
 obj/
-bin/
+bin/Debug/
+RunData.db
